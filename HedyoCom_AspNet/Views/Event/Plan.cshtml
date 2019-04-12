@@ -1,0 +1,341 @@
+﻿@model HedyoCom_AspNet.Models.PlanEventViewModel
+
+@{
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+    ViewBag.Title = "Kendi Etkinliğini Oluştur";
+    var isCustomEvent = Model.EventType == "custom";
+
+    string eventInTurkish = "Kendi Etkinliğini Oluştur!";
+
+    if (@Html.DisplayFor(x => x.EventType).ToString() == "wedding")
+    { eventInTurkish = "Kendi Düğününü Oluştur!"; }
+
+    if (@Html.DisplayFor(x => x.EventType).ToString() == "birthday")
+    { eventInTurkish = "Doğum Gününü Oluştur!"; }
+
+    if (@Html.DisplayFor(x => x.EventType).ToString() == "babyborn")
+    { eventInTurkish = "Çocuk Doğumu Etkinliği!"; }
+
+    if (@Html.DisplayFor(x => x.EventType).ToString() == "new_house_keeping")
+    { eventInTurkish = "Ev Tutma Etkinliği!"; }
+
+    if (@Html.DisplayFor(x => x.EventType).ToString() == "new_work_open")
+    { eventInTurkish = "İşyeri Açma Etkinliği!"; }
+
+    if (@Html.DisplayFor(x => x.EventType).ToString() == "pipi_cuting")
+    { eventInTurkish = "Sünnet Zamanı!"; }
+
+}
+<div class="container">
+    
+    <h2>@eventInTurkish</h2>
+
+    <section id="eventPlan">
+        @using (Html.BeginForm("Plan", "Event", new {ReturnUrl = ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+        {
+            @Html.AntiForgeryToken()
+            <hr/>
+            @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+            @Html.HiddenFor(x => x.EventTypeId)
+            @Html.HiddenFor(x => x.EventType)
+            <div class="row">
+
+                @if (!isCustomEvent)
+                {
+                    
+                    for (var i = 0; i < Model.Characters.Count; i++)
+                    {
+
+                        <div class="@(Model.Characters.Count > 1? "col-lg-6" : "col-lg-12") col-sm-12 panel-group">
+                            @Html.HiddenFor(m => m.Characters[i].Role)
+                            <div class="panel panel-default">
+                                <div class="panel-heading">@Model.GetRoleTitle(Model.EventType, Model.Characters[i].Role)</div>
+                                <div class="panel-body">
+                                    <div class="panel-bg-image">
+                                        <img src="@Url.Content(Model.Characters[i].Icon)" />
+                                    </div>
+                                    <div class="input-group col-sm-10 @(Model.Characters.Count > 1? "col-md-10" : "col-md-11") col-xs-9">
+                                        <span class="input-group-addon" style="width: 100px;">Adı</span>
+                                        @Html.TextBoxFor(m => m.Characters[i].FirstName, new { @class = "form-control" })
+                                    </div>
+                                    <div class="input-group col-sm-10 @(Model.Characters.Count > 1? "col-md-10" : "col-md-11") col-xs-9" style="margin-top: 10px;">
+                                        <span class="input-group-addon" style="width: 100px;">Soyadı</span>
+                                        @Html.TextBoxFor(m => m.Characters[i].LastName, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                
+                }
+                else
+                {
+                    <div id="users">
+                        <div class="user-list">
+                            <div class="col-sm-12" v-bind:class="{'col-lg-6': users.length > 1, 'col-lg-12': users.length <= 1}" v-for="(user, index) in users">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <span v-on:click.stop.prevent="removeCharacter(index)"
+                                           class="glyphicon glyphicon-remove remove-character"></span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="panel-bg-image">
+                                            <img src="/Content/Images/man_icon.svg" />
+                                        </div>
+                                        <div class="input-group col-sm-10 col-xs-9" v-bind:class="inputClass">
+                                            <span class="input-group-addon">Adı</span>
+                                            <input class="form-control"
+                                                   :name="userInputFirstName(index)"
+                                                   v-model="user.firstName">
+                                        </div>
+                                        <div class="input-group col-sm-10 col-xs-9" v-bind:class="inputClass" style="margin-top: 10px;">
+                                            <span class="input-group-addon">Soyadı</span>
+                                            <input class="form-control"
+                                                   :name="userInputLastName(index)"
+                                                   v-model="user.lastName">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-12 add-btn-warpper">
+                            <span v-on:click="addNewCharacter()" class="glyphicon glyphicon-plus add-character c-theme-color"></span>
+                        </div>
+                    </div>
+                   
+                }
+
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Davetlilerin size hediye gönderebileceği IBAN nosu giriniz.</div>
+                        <div class="panel-body">
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-sm-2"></div>
+                                <div class='col-sm-8'>
+                                    <div class='input-group date col-sm-12 col-xs-12' id='IBANevent'>
+                                        <span class="input-group-addon">TR</span>
+                                        @Html.TextBoxFor(m => m.PlanningEvent.IBAN, new { @class = "form-control", maxlength = "24", onkeydown = "numericOnly(this,event)" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row form">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Etkinliğin Yeri ve Saat</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-8">
+                                    <div class="input-group col-sm-12">
+                                        <span class="input-group-addon" style="width: 136px;">Yer</span>
+                                        @Html.TextBoxFor(m => m.PlanningEvent.Place, new { @class = "form-control", style = "max-width:100%" })
+                                        @Html.ValidationMessageFor(m => m.PlanningEvent.Place, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="input-group col-sm-12">
+                                        <span class="input-group-addon" style="width: 120px;">Adres Açıklaması:</span>
+                                        @Html.TextAreaFor(m => m.PlanningEvent.PlaceDescription, new { @class = "form-control", style = "max-width:100%" })
+                                        @Html.ValidationMessageFor(m => m.PlanningEvent.PlaceDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div id="map" style="width: 100%; height: 500px;"></div>
+
+                                </div>
+                                <div class="col-sm-2"></div>
+                            </div>
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-sm-2"></div>
+                                <div class='col-sm-8'>
+                                    <div class='input-group date col-sm-12 col-xs-12' id='eventtimepicker'>
+                                        <span class="input-group-addon" style="width: 120px">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.PlanningEvent.Date, new {@class = "form-control", style = "max-width: 100%"})
+                                    </div>
+                                </div>
+                                <div class="col-sm-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                   
+
+                </div>
+            </div>
+            <div class="form-group" style="text-align: center">
+                <div>
+                    <input type="submit" value="Oluştur" class="btn btn-primary"/>
+                </div>
+            </div>
+            <p>
+                @Html.ActionLink("İptal et ve geri dön", "Index")
+            </p>
+        }
+    </section>
+
+</div>
+
+@section Scripts {
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('#eventtimepicker').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                locale: 'tr'
+            });
+        }, 10);
+
+        // Note: This example requires that you consent to location sharing when
+        // prompted by your browser. If you see the error "The Geolocation service
+        // failed.", it means you probably did not give permission for the browser to
+        // locate you.
+        var map, userPositionMarker, infoWindow, autocomplete, eventInput;
+        function initMap() {
+            eventInput = document.getElementById('PlanningEvent_Place');
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 6
+            });
+            infoWindow = new google.maps.InfoWindow;
+            autocomplete = new google.maps.places.Autocomplete(eventInput);
+
+            autocomplete.addListener('place_changed', function onPlaceChangedHandler() {
+                var place = autocomplete.getPlace();
+
+                eventInput.value = place.formatted_address;
+                userPositionMarker.setPosition(place.geometry.location);
+                map.setCenter(place.geometry.location);
+            })
+
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+                var geocoder = new google.maps.Geocoder();
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    userPositionMarker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        draggable: true,
+                    });
+
+                    userPositionMarker.addListener('dragend', function (coords) {
+                        setAddress(coords.latLng, geocoder);
+                    });
+                
+                    setAddress(pos, geocoder);
+
+                    map.setCenter(pos);
+                }, function () {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                });
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+            }
+        }
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(browserHasGeolocation ?
+                'Error: The Geolocation service failed.' :
+                'Error: Your browser doesn\'t support geolocation.');
+            infoWindow.open(map);
+        }
+
+        function setAddress(pos, geocoder) {
+            geocoder.geocode({ 'location': pos }, function (results, status) {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        eventInput.value = results[0].formatted_address;
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        }
+
+        initMap();
+    });
+</script>
+
+    <script>
+        function numericOnly(element,e)
+{
+                    // Allow: backspace, delete, tab, escape, enter and .
+                    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                        // Allow: Ctrl+A
+                        (e.keyCode == 65 && e.ctrlKey === true) ||
+                        // Allow: home, end, left, right
+                        (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+               
+}
+    </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATWWalEEUK8noNMkXZqvwpafutGy0B6rc&libraries=places"
+    type="text/javascript"></script>
+
+@if (isCustomEvent)
+{
+    <script src="~/node_modules/vue/dist/vue.min.js"></script>
+    <script>
+        (function () {
+            var app = new Vue({
+                el: '#users',
+                data: {
+                    users: [{
+                        firstName: '',
+                        lastName: '',
+                    }],
+                },
+                methods: {
+                    userInputFirstName: function(index) {
+                        return 'Characters[' + index + '].FirstName';
+                    },
+                    userInputLastName: function(index) {
+                        return 'Characters[' + index + '].LastName';
+                    },
+                    addNewCharacter() {
+                        this.users.push({ firstName: '', lastName: '' });
+                    },
+                    removeCharacter(index) {
+                        if (this.users.length <= 1) {
+                            return;
+                        }
+
+                        this.users.splice(index, 1)
+                    },
+                },
+                computed: {
+                    inputClass: function () {
+                        return {
+                            'col-md-10': this.users.length > 1,
+                            'col-md-11': this.users.length <= 1,
+                        }
+                    }
+                }
+            })
+        })()
+    </script>
+}
+}

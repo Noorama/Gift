@@ -1,0 +1,19 @@
+﻿@using HedyoCom_AspNet.Models
+@model EventInvitation
+
+@{
+    ViewBag.Title = "Payment";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+<div class="c-layout-page" style="width: 70%; margin:auto;display: flex;align-items: center; justify-content: center;margin-top: 120px;margin-bottom: 120px;">
+    <div>
+        <h2>Ödeme İsteğiniz Etkinlik sahibi ile paylaşılmıştır!</h2>
+    </div>
+    <div class="col-md-6 col-sm-8" style="margin:auto;display: block;">
+            <div class="col-sm-12">
+                <h3>IBAN: TR @Model.Event.IBAN</h3>
+
+            </div>
+    </div>
+</div>

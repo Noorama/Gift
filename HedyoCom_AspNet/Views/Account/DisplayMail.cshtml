@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Hoş Geldiniz!";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+
+<div class="container">
+    <h2>@ViewBag.Title.</h2>
+    <p>
+        Kayıt olduğunuz için teşekkür ederiz. Mail adresinize doğrulama messaji gönderilmiştir. @Html.ActionLink("Login olmak için tıklayınız", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+    </p>
+</div>

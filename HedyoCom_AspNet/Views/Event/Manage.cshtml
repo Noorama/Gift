@@ -1,0 +1,259 @@
+﻿@using HedyoCom_AspNet.Controllers
+@using HedyoCom_AspNet.Models;
+@model HedyoCom_AspNet.Models.ManageEventViewModel
+
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+<div class="c-layout-page container" id="manage-event">
+    <div class="c-content-panel">
+        <div class="c-label">@*Düğün Bilgileri*@</div>
+        <div class="c-body">
+            <div class="c-content-tab-1">
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                        <ul class="nav nav-tabs tabs-left c-font-uppercase c-font-bold">
+                            <li class="active">
+                                <a href="#tab_16_1" data-toggle="tab" aria-expanded="true">İlgili Kişi(ler)</a>
+                            </li>
+                            <li>
+                                <a href="#tab_16_2" data-toggle="tab"> Yer, Saat </a>
+                            </li>
+                            <li>
+                                <a href="#tab_16_3" data-toggle="tab"> Hediyeler </a>
+                            </li>
+                            <li>
+                                <a href="#tab_16_4" data-toggle="tab"> Davetli Listesi </a>
+                            </li>
+                            <li>
+                                @Html.ActionLink("Devetleri Ekleyiniz", "SelectInvitees", new { WeddingId = Request.QueryString["id"]},null)
+                                @*<a href="~/Views/Event/SelectInvitees.cshtml" data-toggle="tab" aria-expanded="false">Devetleri Ekleyiniz</a>*@
+                            </li>
+                            <li>
+                                <a href="#tab_16_6" data-toggle="tab" aria-expanded="false"> Kaydet</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    @using (Html.BeginForm(nameof(EventController.Manage), "Event", new { id = Request.QueryString["id"] }, FormMethod.Post))
+                    {
+                        @Html.HiddenFor(x => x.EventType)
+                        @Html.HiddenFor(x => x.EventId)
+                        <div class="col-md-9 col-sm-12 col-xs-12">
+                            <div class="tab-content c-padding-sm">
+                                <div class="tab-pane fade active in" id="tab_16_1">
+                                    <div class="row">
+                                        @for (var i = 0; i < Model.Characters.Count; i++)
+                                        {
+                                            @Html.HiddenFor(m => m.Characters[i].Role)
+                                            @Html.HiddenFor(m => m.Characters[i].Icon)
+                                            @Html.HiddenFor(m => m.Characters[i].Id)
+
+                                            <div class="col-sm-6">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">@Model.GetRoleTitle(Model.EventType, Model.Characters[i].Role)</div>
+                                                    <div class="panel-body" style="overflow: hidden; position: relative;">
+                                                        <div class="panel-bg-image">
+                                                            <img src="@Url.Content(Model.Characters[i].Icon)" />
+                                                        </div>
+                                                        <div class="input-group" style="width: 80%">
+                                                            <span class="input-group-addon" style="width: 70px;">Adı</span>
+                                                            @Html.TextBoxFor(m => m.Characters[i].FirstName, new { @class = "form-control" })
+                                                        </div>
+                                                        <div class="input-group" style="margin-top: 10px; width: 80%">
+                                                            <span class="input-group-addon" style="width: 70px;">Soyadı</span>
+                                                            @Html.TextBoxFor(m => m.Characters[i].LastName, new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab_16_2">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">Etkinliğin Yeri ve Saat</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-2"></div>
+                                                        <div class="col-sm-8">
+                                                            <div id="map" style="width: 100%; height: 500px;"></div>
+                                                            <br />
+                                                            <div class="input-group col-sm-12">
+                                                                <span class="input-group-addon" style="width: 133px;">Yer</span>
+                                                                @Html.TextBoxFor(m => m.Place, new { @class = "form-control", style = "max-width:100%" })
+                                                                @Html.ValidationMessageFor(m => m.Place, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div class="input-group col-sm-12">
+                                                                <span class="input-group-addon" style="width: 120px;">Adres Açıklaması</span>
+                                                                @Html.TextAreaFor(m => m.PlaceDescription, new { @class = "form-control", style = "max-width:100%;" })
+                                                                @Html.ValidationMessageFor(m => m.PlaceDescription, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-2"></div>
+                                                    </div>
+                                                    <br />
+                                                    <div class="row" style="margin-top: 10px;">
+                                                        <div class="col-sm-2"></div>
+                                                        <div class='col-sm-8'>
+                                                            <div class='input-group date col-sm-12' id='eventtimepicker'>
+                                                                <span class="input-group-addon" style="width: 120px">
+                                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                                </span>
+                                                                @Html.TextBoxFor(m => m.Date, new { @class = "form-control", style = "max-width: 100%" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-2"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab_16_3">
+                                    <div class="row">
+                                        <div class="input-group col-sm-12" style="padding-left:15px">
+                                        @foreach (var gift in Model.Gifts)
+                                        {
+                                            <div class="gifttemplate btn btn-default" data-toggle="buttons">
+                                                <img width="100" height="100" src="~/Content/Assets/Gifts/Icons/@gift.Image.Filename" />
+                                                <p><b>@gift.Name</b></p>
+                                                <p>@gift.Price ₺</p>
+                                            </div>
+                                        }
+                                        </div>
+                                        <br />
+                                        <div class="col-sm-12">
+                                            <b>IBAN:</b>
+                                                            <div class="input-group col-sm-12">
+                                                                <span class="input-group-addon">TR</span>
+                                                                @Html.TextBoxFor(m => m.IBAN, new { @class = "form-control", maxlength = "24", onkeydown = "numericOnly(this,event)" })
+                                                                @Html.ValidationMessageFor(m => m.IBAN, "", new { @class = "text-danger" })
+                                                            </div>
+
+                                       </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab_16_4">
+                                    @foreach (var invite in Model.EventInvitations)
+                                    {
+
+                                        <div class="row" style="margin-bottom:8px">
+                                            <div>
+                                                <!-- TODO: add proper style to div and remove p tag-->
+                                                <div>
+                                                    <div class="col-sm-4">
+                                                        @invite.InviteeEmail,
+                                                    </div>
+                                                    @switch (invite.InvitationStatus)
+                                                    {
+                                                        case EventInvitation.InvitationResponse.NotResponded:
+                                                            <div class="col-sm-3">
+                                                            <text>Daha Cevap Verilmedi</text>
+                                                            </div>
+                                                            break;
+                                                        case EventInvitation.InvitationResponse.Going:
+                                                            <div class="col-sm-3">
+                                                            <text>Geliyor :)</text>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                            <a class="btn" data-toggle="collapse" href="#@invite.Id" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Detay Görüntüle</a>
+                                                            </div>
+                                                            break;
+                                                        case EventInvitation.InvitationResponse.Maybe:
+                                                            <div class="col-sm-3">
+                                                            <text>Belki :|</text>
+                                                            </div>
+                                                            break;
+                                                        case EventInvitation.InvitationResponse.NotGoing:
+                                                            <div class="col-sm-3">
+                                                            <text>Gelmiyor :(</text>
+                                                            </div>
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                </div>
+                                            </div>
+                                            @{
+                                                var payments = Model.GetInvatedUserPayements(Model.Gifts, invite);
+                                            }
+                                            @if (payments.Count > 0)
+                                            {
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="collapse multi-collapse" id="@invite.Id">
+                                                                <div class="card card-body">
+                                                                    <table class="table payments">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>#</th>
+                                                                                <th>Gift</th>
+                                                                                <th>Amount</th>
+                                                                                <th>Date</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @for (var i = 0; i < payments.Count; i++)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@i</td>
+                                                                                    <td>@payments[i].Gift.Name</td>
+                                                                                    <td>@payments[i].Amount</td>
+                                                                                    <td>@payments[i].Date</td>
+                                                                                </tr>
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            }
+                                        </div>
+                                                }
+                                </div>
+
+                                <div class="tab-pane fade" id="tab_16_6">
+                                    <button class="btn c-theme-btn"> Değişiklikleri Kaydet</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATWWalEEUK8noNMkXZqvwpafutGy0B6rc&libraries=places"
+            type="text/javascript"></script>
+    <script src="~/Scripts/events/manage.js"></script>
+
+<script>
+            function numericOnly(element, e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+
+            }
+</script>
+
+}

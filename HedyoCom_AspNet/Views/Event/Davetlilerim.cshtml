@@ -1,0 +1,26 @@
+﻿@model HedyoCom_AspNet.Models.PortalViewModel
+@{
+    ViewBag.Title = "Davetlilerim";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+    var eventManageSuccess = TempData["EventManageSuccess"]?.ToString();
+    var eventManageError = TempData["EventManageError"]?.ToString();
+}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Davetli Olduğum Etkinlikler</div>
+        <div class="panel-body">
+            <div class="container" style="width:100%">
+                @foreach (var w in Model.AttendingWeddings)
+                {
+                    <div class="row innerborder-row" style="padding:10px">
+                        <div class="col-xs-3 text-center innerborder-col"> @String.Join(" & ", w.Characters.Select(x => x.FirstName)) </div>
+                        <div class="col-xs-6 text-center innerborder-col"> @w.Place </div>
+                        <div class="col-xs-3 text-center innerborder-col"> @w.Date.ToLongDateString()  </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

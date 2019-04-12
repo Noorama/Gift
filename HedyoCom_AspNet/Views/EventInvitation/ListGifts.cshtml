@@ -1,0 +1,79 @@
+﻿@using HedyoCom_AspNet.Models
+@model GiftListViewModel
+
+@{
+    ViewBag.Title = "Hediyeler";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+<style>
+    .giftcontainer {
+        border: 1px solid black;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #e1e1e1;
+    }
+    .giftcontainer > .gifttemplate {
+        border: 1px gray solid;
+        padding: 10px;
+        width: calc(25% - 11px);
+        display: inline-block;
+        margin: 4px;
+        background-color: #ece1da;
+    }
+</style>
+<div class="c-layout-page container">
+    <h2>Hediyeler</h2>
+
+
+    @if (Model.GiftsWithOwnPayments.Count > 0)
+    {
+        //What are u gave as gift
+        <label> Sizin Hediye Ettikleriniz</label>
+        <div class="row giftcontainer">
+            @for (int i = 0; i < Model.GiftsWithOwnPayments.Count; i++)
+            {
+                var g = Model.GiftsWithOwnPayments[i];
+                <div class="gifttemplate">
+                    @Html.HiddenFor(m => g.Id)
+                    <img src="~/Content/Assets/Gifts/Icons/@g.Image.Filename" />
+                    <span>@g.Name</span>
+                    <a>@g.Price ₺</a>
+                    <p>Bu hediyenin @Model.GiftsWithPayments.First(t => t.Id == g.Id).TotalAmount ₺'si davetliler tarafından karşılandı.</p>
+                    @* $ of amount was paid by you *@
+                    <p>Bunun @Model.GiftsWithOwnPayments[i].TotalAmount ₺'sini hediye eden siz oldunuz.</p>
+                </div>
+            }
+        </div>
+    }
+
+    @* All Gifts *@
+    <label> Tüm Hediyeler </label> 
+        @using (Html.BeginForm(
+            "Payment",
+            "EventInvitation",
+            new { id = Request.Params["even"], payload = Request.Params["Payload"] },
+            FormMethod.Post,
+            new { @class = "form-horizontal", role = "form" })
+        )
+        {
+            @Html.AntiForgeryToken()
+            <div class="row giftcontainer">
+
+                @for (var i = 0; i < Model.GiftsWithPayments.Count; i++)
+                {
+                <div class="gifttemplate">
+                    @Html.HiddenFor(m => m.GiftsWithPayments[i].Id)
+                    <img src="~/Content/Assets/Gifts/Icons/@Model.GiftsWithPayments[i].Image.Filename" />
+                    <span>@Model.GiftsWithPayments[i].Name</span>
+                    <a>@Model.GiftsWithPayments[i].Price ₺</a>
+                    @* $ of amount was paid *@
+                    <p>Bu hediyenin @Model.GiftsWithPayments[i].TotalAmount ₺'si davetliler tarafından karşılandı.</p>
+                    @Html.DropDownListFor(model => Model.GiftsWithPayments[i].SelectedAmount, Model.AvailableAmounts, 0)
+           
+                </div>
+                }
+                <button class="btn btn-primary">@* Make a gift *@ Hediye Et</button>
+            </div>
+        }
+</div>

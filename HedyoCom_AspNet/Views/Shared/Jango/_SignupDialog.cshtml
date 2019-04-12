@@ -1,0 +1,149 @@
+﻿@using HedyoCom_AspNet.Models
+
+<!-- BEGIN: CONTENT/USER/FORGET-PASSWORD-FORM -->
+<div class="modal fade c-content-login-form" id="forget-password-form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content c-square">
+            <div class="modal-header c-no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <h3 class="c-font-24 c-font-sbold">Hesap Kurtarma</h3>
+                <p>Hesabınızı kurtarmak için kayıt olduğunuz eposta adresini giriniz</p>
+                <form>
+                    <div class="form-group">
+                        <label for="forget-email" class="hide">Eposta</label>
+                        <input type="email" class="form-control input-lg c-square" id="forget-email" placeholder="Eposta">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login">Kurtar</button>
+                        <a href="javascript:;" class="c-btn-forgot" data-toggle="modal" data-target="#login-form" data-dismiss="modal">Giriş Ekranına Dön</a>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer c-no-border">
+                <span class="c-text-account">Hesabınız yok mu ?</span>
+                <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">Hesap Oluştur!</a>
+            </div>
+        </div>
+    </div>
+</div><!-- END: CONTENT/USER/FORGET-PASSWORD-FORM -->
+<!-- BEGIN: CONTENT/USER/SIGNUP-FORM -->
+<div class="modal fade c-content-login-form" id="signup-form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content c-square">
+            <div class="modal-header c-no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <h3 class="c-font-24 c-font-sbold">Hesap Oluştur</h3>
+                <p>Hesap oluşturmak için lütfen aşağıdaki formu doldurunuz</p>
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="signup-username" class="hide">İsim</label>
+                        <input type="text" name="FirstName" class="form-control input-lg c-square" id="signup-username" placeholder="İsim">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-fullname" class="hide">Soyisim</label>
+                        <input type="text" name="Surname" class="form-control input-lg c-square" id="signup-fullname" placeholder="Soyisim">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email" class="hide">Eposta</label>
+                        <input type="email" name="Email" class="form-control input-lg c-square" id="signup-email" placeholder="Eposta">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password" class="hide">Şifre</label>
+                        <input type="password" name="Password" class="form-control input-lg c-square" id="signup-password" placeholder="Şifre">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirmpassword" class="hide">Şifre (Tekrar)</label>
+                        <input type="password" name="ConfirmPassword" class="form-control input-lg c-square" id="signup-confirmpassword" placeholder="Şifre (Tekrar)">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login">Kayıt Ol</button>
+                        <a href="javascript:;" class="c-btn-forgot" data-toggle="modal" data-target="#login-form" data-dismiss="modal">Giriş Ekranına Dön</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div><!-- END: CONTENT/USER/SIGNUP-FORM -->
+<!-- BEGIN: CONTENT/USER/LOGIN-FORM -->
+<div class="modal fade c-content-login-form" id="login-form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content c-square">
+            <div class="modal-header c-no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <h3 class="c-font-24 c-font-sbold">Giriş Yapın</h3>
+                <p>Hesabınıza ulaşmak için bilgilerinizi girin.</p>
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="login-email" class="hide">Eposta</label>
+                        <input type="email" class="form-control input-lg c-square" id="login-email" placeholder="Eposta" name="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password" class="hide">Şifre</label>
+                        <input type="password" class="form-control input-lg c-square" id="login-password" placeholder="Şifre" name="Password">
+                    </div>
+                    <div class="form-group">
+                        <div class="c-checkbox">
+                            <input type="checkbox" id="login-rememberme" class="c-check" onchange="document.getElementById('login-rememberme-hidden').value = this.checked ? 'true' : 'false';">
+                            <input name="RememberMe" type="hidden" value="false" id="login-rememberme-hidden" />
+                            <label for="login-rememberme" class="c-font-thin c-font-17">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                                Beni Hatırla
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login">Giriş Yap</button>
+                        <a href="javascript:;" data-toggle="modal" data-target="#forget-password-form" data-dismiss="modal" class="c-btn-forgot">Şifrenizi mi unuttunuz ?</a>
+                    </div>
+
+                }
+                    <div class="clearfix">
+                        @*<div class="c-content-divider c-divider-sm c-icon-bg c-bg-grey c-margin-b-20">
+                            <span>ya da giriş için</span>
+                        </div>*@
+                        <ul class="c-content-list-adjusted">
+                            @*<li>
+                                <a class="btn btn-block c-btn-square btn-social btn-twitter">
+                                    <i class="fa fa-twitter" style="border: 0"></i>
+                                    Twitter
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-block c-btn-square btn-social btn-facebook">
+                                    <i class="fa fa-facebook" style="border: 0"></i>
+                                    Facebook
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-block c-btn-square btn-social btn-google">
+                                    <i class="fa fa-google" style="border: 0"></i>
+                                    Google
+                                </a>
+                            </li>*@
+                            <section id="socialLoginForm">
+                                @Html.Partial("~/Views/Account/_ExternalLoginsListPartial.cshtml", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                            </section>
+                        </ul>
+                    </div>
+                
+            </div>
+            <div class="modal-footer c-no-border">
+                <span class="c-text-account">Hesabınız yok mu ?</span>
+                <a href="javascript:;" data-toggle="modal" data-target="#signup-form" data-dismiss="modal" class="btn c-btn-dark-1 btn c-btn-uppercase c-btn-bold c-btn-slim c-btn-border-2x c-btn-square c-btn-signup">Kayıt ol!</a>
+            </div>
+        </div>
+    </div>
+</div><!-- END: CONTENT/USER/LOGIN-FORM -->
+

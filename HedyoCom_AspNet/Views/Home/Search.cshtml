@@ -1,0 +1,33 @@
+﻿@model HedyoCom_AspNet.Models.ManageEventViewModel
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Sonuç:</div>
+        <div class="panel-body">
+            @if (Model.EventId != 0)
+            {
+                <div class="container" style="width:100%">
+                    @Model.EventId Event Mevcuttur
+                </div>
+                <div class="container" style="width:100%">
+                    Etkinlik Türü: @Model.EventType
+                </div>
+                <div class="container" style="width:100%">
+                    Tarihi: @Model.Date
+                </div>
+            }
+            @if (Model.EventId == 0)
+            {
+                <div class="container" style="width:100%">
+                    Sonuç Bulunamadı
+                </div>
+            }
+            
+        </div>
+    </div>
+</div>

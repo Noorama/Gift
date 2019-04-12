@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/HedyoCom_AspNet/App_Data
+/HedyoCom_AspNet/bin
+/HedyoCom_AspNet/obj
+/packages
+/.idea
+/HedyoCom_AspNet/node_modules/vue

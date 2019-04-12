@@ -1,0 +1,19 @@
+﻿@model HedyoCom_AspNet.Models.SocialInvitationViewModel
+
+@{
+    ViewBag.Title = "SocialInvitation";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+    var firstNames = Model.Event.Characters.Select(x => x.FirstName);
+}
+
+@section metatags
+{
+    <meta property="og:url"           content=@Model.ExactUrl />
+    <meta property="og:type"          content="website" />
+    <meta property="og:title"         content="HEDYO.com" />
+    <meta property="og:description"   content=@(string.Join(" & ", firstNames) + " Kişi'de bir etkinlik vardır! Ve siz davetlisiniz!" ) />
+    <meta property="og:image"         content=@Model.ImageUrl />
+}
+<h2>@string.Join(", ", firstNames)</h2>
+<h4>Etkinlik Bilgileri</h4>
+

@@ -1,0 +1,78 @@
+﻿@using HedyoCom_AspNet.Models
+@model EventInvitation
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+<style>
+    .btn-default.active {
+        color: #fff;
+        background-color: #3071a9;
+        border-color: #285e8e;
+    }
+</style>
+<div class="c-layout-page">
+    <div style="max-width: 60%; margin:auto">
+        <div style="margin: auto; text-align: center; margin-top: 10px; padding: 10px;">
+            <div style="height: 200px; display: flex; align-items: center; border: 1px solid gray; border-radius: 10px;background-color: #e7e7e7;">
+                <div style="width: 100%">
+                    <label style="font-size: 2em; display: block">@string.Join(" & ", Model.Event.Characters.Select(x => x.FirstName))</label>
+                    <div style="display: block">@Model.Event.Place, @Model.Event.Date.ToString("dd/MM/yyyy dddd"), @Model.Event.Date.ToString("t")</div>
+
+                </div>
+            </div>
+            <div style="border: 1px solid gray; border-radius: 10px; margin: 20px; background-color: #e7e7e7;">
+                <h3>Katılma durumunuzu belirtin:</h3>
+                <div id="invitationResponseGroup" class="btn-group" data-toggle="buttons" style="margin: 20px; margin-top: 10px">
+                    <label class="btn btn-default @Html.Raw(Model.InvitationStatus == EventInvitation.InvitationResponse.Going ? "active" : "")">
+                        <input type="radio" name="response" value="1" autocomplete="off" @Html.Raw(Model.InvitationStatus == EventInvitation.InvitationResponse.Going ? "checked" : "") /> Geliyorum
+                    </label>
+                    <label class="btn btn-default @Html.Raw(Model.InvitationStatus == EventInvitation.InvitationResponse.Maybe ? "active" : "")">
+                        <input type="radio" name="response" value="3" autocomplete="off" @Html.Raw(Model.InvitationStatus == EventInvitation.InvitationResponse.Maybe ? "checked" : "") /> Belki
+                    </label>
+                    <label class="btn btn-default @Html.Raw(Model.InvitationStatus == EventInvitation.InvitationResponse.NotGoing ? "active" : "")">
+                        <input type="radio" name="response" value="2" autocomplete="off" @Html.Raw(Model.InvitationStatus == EventInvitation.InvitationResponse.NotGoing ? "checked" : "") /> Gelemiyorum
+                    </label>
+                </div>
+            </div>
+            @if (Model.InvitationStatus != EventInvitation.InvitationResponse.NotResponded)
+            {
+                <div style="border: 1px solid gray; border-radius: 10px; margin: 20px; padding: 10px;background-color: #e7e7e7;">
+                    <h2>Hediyenizi Gönderdiniz Mi?</h2>
+                    <div class="btn btn-primary">@Html.ActionLink("Hemen Gönder!", "ListGifts", new { Id = Model.Id, Payload = Model.Payload, even= Model.Id }, new { style = "color:aliceblue" })</div>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+<script>
+    invitationId = @Model.Id;
+    invitationPayload = '@Model.Payload';
+
+    $(window).on('load',
+        function() {
+
+            $("#invitationResponseGroup :input").change(function() {
+                var self = this;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("InvitationResponseSet", "EventInvitation")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ payload: invitationPayload, id: invitationId, response: self.value }),
+                    dataType: "json",
+                    success: function (content) {
+                        if (content.result === 'fail')
+                            alert('Failed: ' + content.reason);
+                        location.reload();
+                    },
+                    error: function() {
+                        window.reload();
+                    }
+                });
+            });
+        });
+
+</script>

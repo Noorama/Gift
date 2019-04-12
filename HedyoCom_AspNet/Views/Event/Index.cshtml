@@ -1,0 +1,89 @@
+﻿@model HedyoCom_AspNet.Models.PortalViewModel
+
+@{
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+    var eventManageSuccess = TempData["EventManageSuccess"]?.ToString();
+    var eventManageError = TempData["EventManageError"]?.ToString();
+}
+
+<div class="container">
+
+
+    <div class="panel panel-default">
+        <div class="panel-body text-center">
+            <div class="row visible-md"></div>
+            <div class="row" style="margin-top: 10px; margin-bottom:10px">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    @*<div class="row">Planlanmış bir etkinliğiniz yok.</div>*@
+                    <div class="row">
+                        <div class="btn-group">
+                            <button type="button" class="btn dropdown-toggle c-theme-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Etkinlik Türünü Seçiniz <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "Wedding" })">Düğün</a></li>
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "Birthday" })">Doğum Günü</a></li>
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "BabyBorn" })">Bebek Görme</a></li>
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "new_House_Keeping" })">Yeni Ev Alma</a></li>
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "new_Work_Open" })">İşyeri Açam / İş Kurma</a></li>
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "pipi_Cuting" })">Sünnet</a></li>
+                                <li><a href="@Url.Action("Plan", "Event", new { eventType = "custom" })">Özel Etkinlik</a></li>
+                            </ul>
+                        </div>
+                        @*<a class="btn btn-primary btn-lg visible" href="/Wedding/Plan"> Kendi Düğününü Planla </a>*@
+                    </div>
+                </div>
+                <div class="col-3"></div>
+            </div>
+            <div class="row visible-md"></div>
+        </div>
+    </div>
+
+    @if (Model.OwnedEvents.Count > 0)
+    {
+        if (!string.IsNullOrWhiteSpace(eventManageSuccess))
+        {
+            <div class="alert alert-success">
+                @eventManageSuccess
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(eventManageError))
+        {
+            <div class="alert alert-danger">
+                @eventManageError
+            </div>
+        }
+        <div class="panel panel-default">
+            <div class="panel-heading">Benim Etkinliklerim</div>
+            <div class="panel-body">
+                <div class="container" style="width:100%">
+                    @foreach (var w in Model.OwnedEvents)
+                    {
+                        <div class="btn-default row innerborder-row" style="padding: 10px;" onclick="location.href='@Url.Action("Manage", "Event", new { id = w.Id})'">
+                            <div class="col-xs-3 text-center innerborder-col"> @String.Join(" & ", w.Characters.Select(x => x.FirstName)) </div>
+                            <div class="col-xs-6 text-center innerborder-col"> @w.Place </div>
+                            <div class="col-xs-3 text-center innerborder-col"> @w.Date.ToLongDateString()  </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @*<div class="panel panel-default">
+        <div class="panel-heading">Davetli Olduğum Etkinlikler</div>
+        <div class="panel-body">
+            <div class="container" style="width:100%">
+                @foreach (var w in Model.AttendingWeddings)
+                {
+                    <div class="row innerborder-row" style="padding:10px">
+                        <div class="col-xs-3 text-center innerborder-col"> @String.Join(" & ", w.Characters.Select(x => x.FirstName)) </div>
+                        <div class="col-xs-6 text-center innerborder-col"> @w.Place </div>
+                        <div class="col-xs-3 text-center innerborder-col"> @w.Date.ToLongDateString()  </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>*@
+</div>

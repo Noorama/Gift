@@ -1,0 +1,84 @@
+﻿@using HedyoCom_AspNet.Controllers
+@model HedyoCom_AspNet.Models.SelectGiftsViewModel
+@{
+    ViewBag.Title = "Hediyelerizi Seçin";
+    Layout = "~/Views/Shared/_JangoLayout.cshtml";
+}
+
+<style>
+    .giftbox {
+        max-width: 90%;
+        margin: auto;
+    }
+    .gifttemplate {
+	float: left;
+	width: 200px;
+	height: 160px;
+    }
+    .gifttemplate img {
+        height: 100px;
+        width: auto;
+        margin: auto;
+    }
+    .gifttemplate > * {
+        display: block
+    }
+
+</style>
+
+<div class="container">
+    @using (Html.BeginForm(nameof(EventController.SelectGifts), "Event", new {}, FormMethod.Post, new {@class = "giftbox", role = "form", id = "form"}))
+    {
+        @Html.HiddenFor(m => m.EventId)
+
+        <h2>Hediyelerinizi Seçin</h2>
+        <h4>Fiyatları daha sonra istediğiniz şekilde değiştirebileceksiniz.</h4>
+
+        if (ViewData.ModelState.IsValid == false)
+        {
+            <div class="alert alert-danger">
+                <strong>Olmadı!</strong> @Html.ValidationMessage("general")
+            </div>
+        }
+
+        <div class="row">
+
+            @*Search for Custom Event and bring it as first option. Loop exit after finding.*@
+            @for (int i = 0; i < Model.Templates.Count; i++)
+            {
+                if (Model.Templates[i].Name == "Özel")
+                {
+                    <div class="gifttemplate btn btn-default @Html.Raw(Model.SelectedTemplates.Contains(i) ? "active" : "")" data-toggle="buttons">
+                        @Html.HiddenFor(m => Model.Templates[i].GiftImage.Id)
+                        @Html.HiddenFor(m => Model.Templates[i].GiftImage.Filename)
+                        <img src="~/Content/Assets/Gifts/Icons/@Model.Templates[i].GiftImage.Filename" />
+                        <span>@Html.TextBoxFor(x => x.Templates[i].Name)</span>
+                        <span>@Html.TextBoxFor(x => x.Templates[i].Price)</span>
+                        <input type="checkbox" style="display: none" @(Model.SelectedTemplates.Contains(i) ? "checked" : "") name="SelectedTemplates" value=@i />
+                    </div>
+                    break;
+                }
+            }
+
+            @for (int i = 0; i < Model.Templates.Count; i++)
+            {
+                if (Model.Templates[i].Name != "Özel")
+                {
+                    <div class="gifttemplate btn btn-default @Html.Raw(Model.SelectedTemplates.Contains(i) ? "active" : "")" data-toggle="buttons">
+                        @Html.HiddenFor(m => Model.Templates[i].Name)
+                        @Html.HiddenFor(m => Model.Templates[i].GiftImage.Id)
+                        @Html.HiddenFor(m => Model.Templates[i].GiftImage.Filename)
+                        <img src="~/Content/Assets/Gifts/Icons/@Model.Templates[i].GiftImage.Filename" />
+                        <span>@Model.Templates[i].Name</span>
+                        @Html.TextBoxFor(x => x.Templates[i].Price)
+                        <input type="checkbox" style="display: none" @(Model.SelectedTemplates.Contains(i) ? "checked" : "") name="SelectedTemplates" value=@i />
+                    </div>
+                }
+
+            }
+
+            @*Custom Gift*@
+
+        </div>
+        <input class="btn btn-primary" value="Devam" type="submit"/>
+    }</div>
